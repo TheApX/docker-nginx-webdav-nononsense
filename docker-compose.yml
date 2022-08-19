@@ -2,20 +2,30 @@ version: '3.3'
 services:
     nginxwebdav:
         container_name: nginxwebdav
+        image: dgraziotin/nginx-webdav-nononsense
         build:
             context: .
+        restart: always
         volumes:
-            - ./data:/data
-            - ./htpasswd:/etc/nginx/htpasswd
+            - data:/data
+            # - ./htpasswd:/etc/nginx/htpasswd
         environment:
             - PUID=501
             - PGID=20
-            - TZ=Europe/Berlin
-            - WEBDAV_USERNAME=user
-            - WEBDAV_PASSWORD=password
-            - SERVER_NAMES=localhost
+            - TZ=America/New_York
+            # Username and password are handled by reverse proxy
+            # - WEBDAV_USERNAME=user
+            # - WEBDAV_PASSWORD=password
+            - SERVER_NAMES=localhost,apxpi4,file.isupov.xyz
             - TIMEOUTS_S=1200 # these are seconds
-            - CLIENT_MAX_BODY_SIZE=120M # must end with M(egabytes) or G(igabytes)
+            - CLIENT_MAX_BODY_SIZE=10240M # must end with M(egabytes) or G(igabytes)
         ports:
-          - 32080:80
-        
+            - 32080:80
+
+volumes:
+    data:
+        driver: local
+        driver_opts:
+            type: "cifs"
+            device: "//192.168.10.201/Public/"
+            o: "username=guest,password=guest,iocharset=utf8,file_mode=0777,dir_mode=0777,uid=501,gid=20"
