@@ -2,9 +2,10 @@ version: '3.3'
 services:
     nginxwebdav:
         container_name: nginxwebdav
-        image: dgraziotin/nginx-webdav-nononsense
+        # image: dgraziotin/nginx-webdav-nononsense
         build:
             context: .
+            dockerfile: fixes.Dockerfile
         restart: always
         volumes:
             - data:/data
